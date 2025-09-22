@@ -1,6 +1,6 @@
 """
-Analisador de Artigos e Livros - Versão 2.0
-Interface moderna e funcional para análise de listas acadêmicas
+Article and Book Analyzer - Version 2.0
+Modern and functional interface for analyzing academic lists
 """
 
 import tkinter as tk

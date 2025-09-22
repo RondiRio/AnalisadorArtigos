@@ -1,6 +1,6 @@
 """
-Analisador de Artigos e Livros - Versão 2.0
-Interface moderna e funcional para análise de listas acadêmicas
+Article and Book Analyzer - Version 2.0
+Modern and functional interface for analyzing academic lists
 """
 
 import tkinter as tk
@@ -12,32 +12,32 @@ from pathlib import Path
 
 
 class ModernStyle:
-    """Configurações de estilo moderno para a interface"""
+    """Modern style settings for the interface"""
     
-    # Paleta de cores moderna
+    # Modern color palette
     COLORS = {
-        'primary': '#2563eb',      # Azul moderno
+        'primary': '#2563eb',      # Modern blue
         'primary_hover': '#1d4ed8', 
-        'secondary': '#64748b',    # Cinza azulado
-        'success': '#10b981',      # Verde
-        'warning': '#f59e0b',      # Amarelo
-        'danger': '#ef4444',       # Vermelho
-        'bg_primary': '#ffffff',   # Branco
-        'bg_secondary': '#f8fafc', # Cinza muito claro
-        'text_primary': '#1e293b', # Cinza escuro
-        'text_secondary': '#64748b', # Cinza médio
-        'border': '#e2e8f0'        # Cinza claro
+        'secondary': '#64748b',    # Bluish gray
+        'success': '#10b981',      # Green
+        'warning': '#f59e0b',      # Yellow
+        'danger': '#ef4444',       # Red
+        'bg_primary': '#ffffff',   # White
+        'bg_secondary': '#f8fafc', # Very light gray
+        'text_primary': '#1e293b', # Dark gray
+        'text_secondary': '#64748b', # Medium gray
+        'border': '#e2e8f0'        # Light gray
     }
     
     @staticmethod
     def apply_modern_style():
-        """Aplica estilo moderno aos widgets ttk"""
+        """Apply modern style to tiktok widgets"""
         style = ttk.Style()
         
-        # Configurar tema base
+        # Configure base theme
         style.theme_use('clam')
         
-        # Estilo para botões
+        # Button style
         style.configure(
             'Modern.TButton',
             padding=(20, 10),
@@ -56,28 +56,28 @@ class ModernStyle:
             relief=[('pressed', 'flat'), ('!pressed', 'flat')]
         )
         
-        # Estilo para botão primário
+        # Style for primary button
         style.configure(
             'Primary.TButton',
             padding=(25, 12),
             font=('Segoe UI', 11, 'bold')
         )
         
-        # Estilo para labels
+        # Style for labels
         style.configure(
             'Modern.TLabel',
             font=('Segoe UI', 10),
             foreground=ModernStyle.COLORS['text_primary']
         )
         
-        # Estilo para título
+        # Title style
         style.configure(
             'Title.TLabel',
             font=('Segoe UI', 18, 'bold'),
             foreground=ModernStyle.COLORS['primary']
         )
         
-        # Estilo para entry
+        # Entry style
         style.configure(
             'Modern.TEntry',
             padding=(10, 8),
@@ -85,7 +85,7 @@ class ModernStyle:
             borderwidth=2
         )
         
-        # Estilo para LabelFrame
+        # Style for LabelFrame
         style.configure(
             'Modern.TLabelframe',
             borderwidth=2,
@@ -109,15 +109,15 @@ class ArticleAnalyzer:
         self.create_interface()
         
     def setup_window(self):
-        """Configura a janela principal"""
+        """Configure the main window"""
         self.root.title("Analisador de Artigos e Livros v2.0")
         self.root.geometry("900x700")
         self.root.minsize(800, 600)
         
-        # Configurar ícone (se disponível)
+        # Configure icon (if available)
         try:
             if hasattr(sys, '_MEIPASS'):
-                # Executável PyInstaller
+                # PyInstaller Executable
                 icon_path = os.path.join(sys._MEIPASS, 'icon.ico')
             else:
                 icon_path = 'icon.ico'
@@ -127,11 +127,11 @@ class ArticleAnalyzer:
         except:
             pass
         
-        # Centralizar janela
+        # Center window
         self.center_window()
         
     def center_window(self):
-        """Centraliza a janela na tela"""
+        """Centers the window on the screen"""
         self.root.update_idletasks()
         width = self.root.winfo_width()
         height = self.root.winfo_height()
@@ -140,69 +140,69 @@ class ArticleAnalyzer:
         self.root.geometry(f'{width}x{height}+{x}+{y}')
     
     def setup_variables(self):
-        """Inicializa as variáveis da aplicação"""
+        """Initializes the application variables"""
         self.df = None
         self.all_titles = []
         self.duplicates = []
         self.file_path = tk.StringVar()
         
     def apply_modern_style(self):
-        """Aplica o estilo moderno"""
+        """Apply the modern style"""
         ModernStyle.apply_modern_style()
         self.root.configure(bg=ModernStyle.COLORS['bg_secondary'])
         
     def create_interface(self):
-        """Cria a interface do usuário"""
-        # Container principal com padding
+        """Creates the user interface"""
+        # Main container with padding
         main_container = ttk.Frame(self.root)
         main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
-        # Configurar grid
+        # Configure grid
         main_container.columnconfigure(0, weight=1)
         main_container.rowconfigure(2, weight=1)
         
-        # Cabeçalho
+        # Header
         self.create_header(main_container)
         
-        # Seção de seleção de arquivo
+        # File selection section
         self.create_file_selection(main_container)
         
-        # Área de resultados
+        # Results area
         self.create_results_area(main_container)
         
-        # Área de botões de exportação
+        # Export buttons area
         self.create_export_buttons(main_container)
         
         # Status bar
         self.create_status_bar(main_container)
         
     def create_header(self, parent):
-        """Cria o cabeçalho da aplicação"""
+        """Creates the application header"""
         header_frame = ttk.Frame(parent)
         header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 30))
         header_frame.columnconfigure(0, weight=1)
         
-        # Título principal
+        # Main title
         title_label = ttk.Label(
             header_frame,
-            text="📚 Analisador de Artigos e Livros",
+            text="📚 Article and Book Analyzer",
             style='Title.TLabel'
         )
         title_label.grid(row=0, column=0)
         
-        # Subtítulo
+        # Subtitle
         subtitle_label = ttk.Label(
             header_frame,
-            text="Análise profissional de listas acadêmicas em formato CSV",
+            text="Professional analysis of academic lists in CSV format",
             style='Modern.TLabel'
         )
         subtitle_label.grid(row=1, column=0, pady=(5, 0))
         
     def create_file_selection(self, parent):
-        """Cria a seção de seleção de arquivo"""
+        """Creates the file selection section"""
         file_frame = ttk.LabelFrame(
             parent,
-            text="📁 Selecionar Arquivo CSV",
+            text="📁 Select CSV File",
             style='Modern.TLabelframe',
             padding=15
         )
@@ -212,11 +212,11 @@ class ArticleAnalyzer:
         # Label
         ttk.Label(
             file_frame,
-            text="Arquivo:",
+            text="File:",
             style='Modern.TLabel'
         ).grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
         
-        # Entry para caminho do arquivo
+        # Entry for file path
         self.file_entry = ttk.Entry(
             file_frame,
             textvariable=self.file_path,
@@ -224,29 +224,29 @@ class ArticleAnalyzer:
         )
         self.file_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
         
-        # Botão procurar
+        # Search button
         browse_btn = ttk.Button(
             file_frame,
-            text="📂 Procurar",
+            text="📂 Search",
             command=self.browse_file,
             style='Modern.TButton'
         )
         browse_btn.grid(row=0, column=2)
         
-        # Botão analisar
+        # Analyze button
         analyze_btn = ttk.Button(
             file_frame,
-            text="🔍 Analisar Arquivo",
+            text="🔍 Analyze File",
             command=self.analyze_file,
             style='Primary.TButton'
         )
         analyze_btn.grid(row=1, column=0, columnspan=3, pady=(15, 0))
         
     def create_results_area(self, parent):
-        """Cria a área de resultados"""
+        """Creates the results area"""
         results_frame = ttk.LabelFrame(
             parent,
-            text="📊 Resultados da Análise",
+            text="📊 Analysis Results",
             style='Modern.TLabelframe',
             padding=15
         )
@@ -254,7 +254,7 @@ class ArticleAnalyzer:
         results_frame.columnconfigure(0, weight=1)
         results_frame.rowconfigure(0, weight=1)
         
-        # Text widget com scrollbar
+        # Text widget with scrollbar
         text_frame = ttk.Frame(results_frame)
         text_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         text_frame.columnconfigure(0, weight=1)
@@ -279,25 +279,25 @@ class ArticleAnalyzer:
         self.results_text.configure(yscrollcommand=scrollbar.set)
         
     def create_export_buttons(self, parent):
-        """Cria os botões de exportação"""
+        """Creates the export buttons"""
         export_frame = ttk.Frame(parent)
         export_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         export_frame.columnconfigure((0, 1), weight=1)
         
-        # Botão exportar todos
+        # Export all button
         self.export_all_btn = ttk.Button(
             export_frame,
-            text="📋 Exportar Lista Completa",
+            text="📋 Export Complete List",
             command=self.export_all_titles,
             state=tk.DISABLED,
             style='Modern.TButton'
         )
         self.export_all_btn.grid(row=0, column=0, padx=(0, 10), sticky=(tk.W, tk.E))
         
-        # Botão exportar duplicados
+        # Export Duplicates Button
         self.export_duplicates_btn = ttk.Button(
             export_frame,
-            text="🔍 Exportar Duplicados",
+            text="🔍 Export Duplicates",
             command=self.export_duplicates,
             state=tk.DISABLED,
             style='Modern.TButton'
@@ -305,8 +305,8 @@ class ArticleAnalyzer:
         self.export_duplicates_btn.grid(row=0, column=1, padx=(10, 0), sticky=(tk.W, tk.E))
         
     def create_status_bar(self, parent):
-        """Cria a barra de status"""
-        self.status_var = tk.StringVar(value="Pronto para análise")
+        """Creates the status bar"""
+        self.status_var = tk.StringVar(value="Ready for analysis")
         status_label = ttk.Label(
             parent,
             textvariable=self.status_var,
@@ -317,14 +317,14 @@ class ArticleAnalyzer:
         status_label.grid(row=4, column=0, sticky=(tk.W, tk.E))
         
     def update_status(self, message):
-        """Atualiza a mensagem de status"""
+        """Updates the status message"""
         self.status_var.set(message)
         self.root.update_idletasks()
         
     def browse_file(self):
-        """Abre dialog para seleção de arquivo"""
+        """Opens dialog for file selection"""
         file_path = filedialog.askopenfilename(
-            title="Selecionar arquivo CSV",
+            title="Select CSV file",
             filetypes=[
                 ("Arquivos CSV", "*.csv"),
                 ("Todos os arquivos", "*.*")
@@ -335,7 +335,7 @@ class ArticleAnalyzer:
             self.update_status(f"Arquivo selecionado: {Path(file_path).name}")
     
     def is_valid_academic_content(self, df):
-        """Verifica se o CSV contém conteúdo acadêmico válido"""
+        """Checks if the CSV contains valid academic content"""
         if df.empty:
             return False
             
@@ -351,7 +351,7 @@ class ArticleAnalyzer:
         if not has_academic_columns:
             return False
             
-        # Verifica se há dados válidos
+        # Checks for valid data
         for col in df.columns:
             if any(keyword in col.lower() for keyword in ['title', 'titulo', 'título', 'nome', 'name']):
                 sample_data = df[col].dropna().head(10)
@@ -363,18 +363,18 @@ class ArticleAnalyzer:
         return False
     
     def find_title_and_author_columns(self, df):
-        """Identifica colunas de título e autor"""
+        """Identifies title and author columns"""
         title_col = None
         author_col = None
         
-        # Procura coluna de título
+        # Search for title column
         for col in df.columns:
             col_lower = col.lower().strip()
             if any(keyword in col_lower for keyword in ['title', 'titulo', 'título', 'nome', 'name']):
                 title_col = col
                 break
         
-        # Procura coluna de autor
+        # Search for author column
         for col in df.columns:
             col_lower = col.lower().strip()
             if any(keyword in col_lower for keyword in ['author', 'autor', 'autores', 'authors']):
@@ -384,67 +384,67 @@ class ArticleAnalyzer:
         return title_col, author_col
     
     def analyze_file(self):
-        """Analisa o arquivo CSV selecionado"""
+        """Parses the selected CSV file"""
         if not self.file_path.get():
-            messagebox.showerror("Erro", "Por favor, selecione um arquivo CSV.")
+            messagebox.showerror("Error", "Please select a CSV file.")
             return
         
         file_path = self.file_path.get()
         if not os.path.exists(file_path):
-            messagebox.showerror("Erro", "Arquivo não encontrado.")
+            messagebox.showerror("Error", "File not found.")
             return
         
-        self.update_status("Analisando arquivo...")
+        self.update_status("Analyzing file...")
         
         try:
-            # Lê o arquivo CSV
+            # Reads the CSV file
             self.df = pd.read_csv(file_path, encoding='utf-8')
             
         except UnicodeDecodeError:
             try:
-                # Tenta com encoding diferente
+                # Try with different encoding
                 self.df = pd.read_csv(file_path, encoding='latin1')
             except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao ler arquivo: {str(e)}")
+                messagebox.showerror("Error", f"Error reading file: {str(e)}")
                 return
                 
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao processar arquivo: {str(e)}")
+            messagebox.showerror("Error", f"Error processing file: {str(e)}")
             return
         
-        # Valida conteúdo
+        # Validates content
         if not self.is_valid_academic_content(self.df):
             messagebox.showerror(
-                "Arquivo Inválido", 
-                "O arquivo não parece conter uma lista válida de artigos ou livros acadêmicos.\n\n"
-                "Verifique se o arquivo possui colunas como 'title', 'autor', etc."
+                "Invalid File", 
+                "The file does not appear to contain a valid list of academic articles or books.\n\n"
+                "Check if the file has columns like 'title', 'autor', etc."
             )
             return
         
-        # Identifica colunas
+        # Identifies columns
         title_col, author_col = self.find_title_and_author_columns(self.df)
         
         if not title_col:
-            messagebox.showerror("Erro", "Não foi possível identificar uma coluna de títulos.")
+            messagebox.showerror("Error", "Unable to identify a heading column.")
             return
         
-        # Processa dados
+        # Processes data
         self.process_data(title_col, author_col)
         
-        # Habilita botões de exportação
+        # Enables export buttons
         self.export_all_btn.config(state=tk.NORMAL)
         self.export_duplicates_btn.config(state=tk.NORMAL)
         
-        self.update_status("Análise concluída com sucesso!")
+        self.update_status("Analysis completed successfully!")
         
     def process_data(self, title_col, author_col):
-        """Processa os dados do CSV"""
-        # Remove linhas vazias
+        """Processes CSV data"""
+        # Remove empty lines
         self.df = self.df.dropna(subset=[title_col])
         
         total_count = len(self.df)
         
-        # Prepara lista completa
+        # Prepare a complete list
         self.all_titles = []
         for _, row in self.df.iterrows():
             title = str(row[title_col]).strip()
@@ -454,9 +454,9 @@ class ArticleAnalyzer:
             else:
                 self.all_titles.append(title)
         
-        # Identifica duplicados
+        # Identifies duplicates
         if author_col:
-            # Combina título e autor para detecção de duplicados
+            # Combine title and author for duplicate detection
             self.df['combined'] = (
                 self.df[title_col].astype(str).str.strip() + " | " + 
                 self.df[author_col].astype(str).str.strip()
@@ -467,79 +467,79 @@ class ArticleAnalyzer:
             self.duplicates = []
             for _, row in duplicates_df.iterrows():
                 title = str(row[title_col]).strip()
-                author = str(row[author_col]).strip() if pd.notna(row[author_col]) else "Autor não informado"
+                author = str(row[author_col]).strip() if pd.notna(row[author_col]) else "Author not informed"
                 self.duplicates.append(f"{title} — {author}")
         else:
             duplicated_mask = self.df.duplicated(subset=[title_col], keep=False)
             duplicates_df = self.df[duplicated_mask]
             self.duplicates = [str(title).strip() for title in duplicates_df[title_col]]
         
-        # Exibe resultados
+        # Displays results
         self.display_results(total_count, len(self.duplicates), title_col, author_col)
     
     def display_results(self, total_count, duplicate_count, title_col, author_col):
-        """Exibe os resultados da análise"""
+        """Displays the analysis results"""
         self.results_text.delete(1.0, tk.END)
         
-        # Cabeçalho estilizado
+        # Stylized header
         result_text = "═" * 70 + "\n"
-        result_text += "📊 ANÁLISE COMPLETA DE ARTIGOS E LIVROS\n"
+        result_text += "📊 COMPLETE ANALYSIS OF ARTICLES AND BOOKS\n"
         result_text += "═" * 70 + "\n\n"
         
-        # Resumo executivo
-        result_text += "📋 RESUMO EXECUTIVO\n"
+        # Executive summary
+        result_text += "📋 EXECUTIVE SUMMARY\n"
         result_text += "─" * 40 + "\n"
-        result_text += f"• Total de registros analisados: {total_count:,}\n"
-        result_text += f"• Registros únicos: {total_count - duplicate_count:,}\n"
-        result_text += f"• Duplicados encontrados: {duplicate_count:,}\n"
+        result_text += f"• Total records analyzed: {total_count:,}\n"
+        result_text += f"• Unique records: {total_count - duplicate_count:,}\n"
+        result_text += f"• Duplicates found: {duplicate_count:,}\n"
         
         if duplicate_count > 0:
             percentage = (duplicate_count / total_count) * 100
-            result_text += f"• Taxa de duplicação: {percentage:.1f}%\n"
+            result_text += f"• Doubling rate: {percentage:.1f}%\n"
         
-        result_text += f"• Coluna de títulos: '{title_col}'\n"
+        result_text += f"• Title column: '{title_col}'\n"
         if author_col:
-            result_text += f"• Coluna de autores: '{author_col}'\n"
+            result_text += f"• Authors column: '{author_col}'\n"
         
         result_text += "\n" + "═" * 70 + "\n\n"
         
-        # Lista completa
-        result_text += "📚 LISTA COMPLETA DE TÍTULOS\n"
+        # Complete list
+        result_text += "📚 COMPLETE LIST OF TITLES\n"
         result_text += "─" * 40 + "\n"
         
         for i, title in enumerate(self.all_titles, 1):
             result_text += f"{i:4d}. {title}\n"
         
-        result_text += f"\n✅ Total listado: {len(self.all_titles):,} registros\n\n"
+        result_text += f"\n✅ Total listed: {len(self.all_titles):,} records\n\n"
         
         # Duplicados (se houver)
         if duplicate_count > 0:
-            result_text += "🔍 REGISTROS DUPLICADOS IDENTIFICADOS\n"
+            result_text += "🔍 DUPLICATE RECORDS IDENTIFIED\n"
             result_text += "─" * 40 + "\n"
             
             for i, duplicate in enumerate(self.duplicates, 1):
                 result_text += f"{i:4d}. {duplicate}\n"
             
-            result_text += f"\n⚠️  Total de duplicados: {len(self.duplicates):,} registros\n"
-            result_text += "\n💡 RECOMENDAÇÃO: Revise os duplicados antes de prosseguir\n"
+            result_text += f"\n⚠️  Total duplicates: {len(self.duplicates):,} records\n"
+            result_text += "\n💡 RECOMMENDATION: Review duplicates before proceeding\n"
         else:
-            result_text += "✅ NENHUM DUPLICADO ENCONTRADO\n"
+            result_text += "✅ NO DUPLICATE FOUND\n"
             result_text += "─" * 40 + "\n"
-            result_text += "Parabéns! Sua lista não contém registros duplicados.\n"
+            result_text += "Congratulations! Your list contains no duplicate records..\n"
         
         result_text += "\n" + "═" * 70 + "\n"
-        result_text += "📤 Use os botões abaixo para exportar os resultados\n"
+        result_text += "📤 Use the buttons below to export the results\n"
         
         self.results_text.insert(1.0, result_text)
     
     def export_all_titles(self):
-        """Exporta todos os títulos para CSV"""
+        """Export all titles to CSV"""
         if not self.all_titles:
-            messagebox.showwarning("Aviso", "Não há dados para exportar.")
+            messagebox.showwarning("Warning!", "There is no data to export.")
             return
         
         file_path = filedialog.asksaveasfilename(
-            title="Salvar lista completa",
+            title="Save full list",
             defaultextension=".csv",
             filetypes=[("Arquivos CSV", "*.csv")]
         )
@@ -548,33 +548,33 @@ class ArticleAnalyzer:
             try:
                 export_data = []
                 for i, title in enumerate(self.all_titles, 1):
-                    export_data.append({"Número": i, "Título Completo": title})
+                    export_data.append({"Number": i, "Full Title": title})
                 
-                # Adiciona resumo
-                export_data.append({"Número": "", "Título Completo": ""})
-                export_data.append({"Número": "RESUMO:", "Título Completo": f"Total de {len(self.all_titles)} registros"})
+                # Add summary
+                export_data.append({"Number": "", "Full Title": ""})
+                export_data.append({"Number": "SUMMARY:", "Full Title": f"Total of {len(self.all_titles)} records"})
                 
                 df_export = pd.DataFrame(export_data)
                 df_export.to_csv(file_path, index=False, encoding='utf-8-sig')
                 
                 messagebox.showinfo(
-                    "Exportação Concluída", 
-                    f"Lista completa exportada com sucesso!\n\n"
-                    f"Arquivo: {Path(file_path).name}\n"
-                    f"Total de registros: {len(self.all_titles)}"
+                    "Export Completed", 
+                    f"Complete list exported successfully!\n\n"
+                    f"File: {Path(file_path).name}\n"
+                    f"Total records: {len(self.all_titles)}"
                 )
                 
             except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao exportar arquivo: {str(e)}")
+                messagebox.showerror("Error", f"Error exporting file: {str(e)}")
     
     def export_duplicates(self):
-        """Exporta apenas os duplicados para CSV"""
+        """Export only duplicates to CSV"""
         if not self.duplicates:
-            messagebox.showinfo("Informação", "Não há registros duplicados para exportar.")
+            messagebox.showinfo("Information", "There are no duplicate records to export.")
             return
         
         file_path = filedialog.asksaveasfilename(
-            title="Salvar lista de duplicados",
+            title="Save duplicate list",
             defaultextension=".csv",
             filetypes=[("Arquivos CSV", "*.csv")]
         )
@@ -583,44 +583,44 @@ class ArticleAnalyzer:
             try:
                 export_data = []
                 for i, duplicate in enumerate(self.duplicates, 1):
-                    export_data.append({"Número": i, "Registro Duplicado": duplicate})
+                    export_data.append({"Number": i, "Duplicate Registration": duplicate})
                 
-                # Adiciona resumo
-                export_data.append({"Número": "", "Registro Duplicado": ""})
-                export_data.append({"Número": "RESUMO:", "Registro Duplicado": f"Total de {len(self.duplicates)} duplicados"})
+                # Add summary
+                export_data.append({"Number": "", "Duplicate Registration": ""})
+                export_data.append({"Number": "SUMMARY:", "Duplicate Registration": f"Total of {len(self.duplicates)} duplicates"})
                 
                 df_export = pd.DataFrame(export_data)
                 df_export.to_csv(file_path, index=False, encoding='utf-8-sig')
                 
                 messagebox.showinfo(
-                    "Exportação Concluída", 
-                    f"Lista de duplicados exportada com sucesso!\n\n"
-                    f"Arquivo: {Path(file_path).name}\n"
-                    f"Total de duplicados: {len(self.duplicates)}"
+                    "Export Completed", 
+                    f"Duplicate list exported successfully!\n\n"
+                    f"File: {Path(file_path).name}\n"
+                    f"Total duplicates: {len(self.duplicates)}"
                 )
                 
             except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao exportar arquivo: {str(e)}")
+                messagebox.showerror("Error", f"Error exporting file: {str(e)}")
 
 
 def main():
-    """Função principal da aplicação"""
+    """Main function of the application"""
     try:
         root = tk.Tk()
         app = ArticleAnalyzer(root)
         root.mainloop()
     except Exception as e:
-        # Log do erro para debug
+        # Error log for debugging
         import traceback
         with open('error_log.txt', 'w') as f:
-            f.write(f"Erro na aplicação: {e}\n")
+            f.write(f"Application error: {e}\n")
             f.write(traceback.format_exc())
         
-        # Mostra erro para o usuário
+        # Show error to user
         try:
-            messagebox.showerror("Erro Fatal", f"Erro inesperado: {e}")
+            messagebox.showerror("Fatal Error", f"Unexpected error: {e}")
         except:
-            print(f"Erro fatal: {e}")
+            print(f"Fatal error: {e}")
 
 
 if __name__ == "__main__":
