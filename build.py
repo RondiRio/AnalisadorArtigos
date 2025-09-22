@@ -149,7 +149,7 @@ def build_executable():
     """Compile the executable using PyInstaller"""
     print("\n🔨 Compiling executable...")
     
-    # Comando básico e funcional
+    # Basic command
     build_command = [
         sys.executable, '-m', 'PyInstaller',
         '--onefile',                    # Single file

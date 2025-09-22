@@ -12,21 +12,21 @@ from pathlib import Path
 
 
 class ModernStyle:
-    """Configurações de estilo moderno para a interface"""
+    """Modern style settings for the interface"""
     
-    # Paleta de cores moderna
+    # Modern color palette
     COLORS = {
-        'primary': '#2563eb',      # Azul moderno
+        'primary': '#2563eb',      # Modern blue
         'primary_hover': '#1d4ed8', 
-        'secondary': '#64748b',    # Cinza azulado
-        'success': '#10b981',      # Verde
-        'warning': '#f59e0b',      # Amarelo
-        'danger': '#ef4444',       # Vermelho
-        'bg_primary': '#ffffff',   # Branco
-        'bg_secondary': '#f8fafc', # Cinza muito claro
-        'text_primary': '#1e293b', # Cinza escuro
-        'text_secondary': '#64748b', # Cinza médio
-        'border': '#e2e8f0'        # Cinza claro
+        'secondary': '#64748b',    # Bluish gray
+        'success': '#10b981',      # Green
+        'warning': '#f59e0b',      # Yellow
+        'danger': '#ef4444',       # Red
+        'bg_primary': '#ffffff',   # White
+        'bg_secondary': '#f8fafc', # Very light gray
+        'text_primary': '#1e293b', # Dark gray
+        'text_secondary': '#64748b', # Medium gray
+        'border': '#e2e8f0'        # Light gray
     }
     
     @staticmethod

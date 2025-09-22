@@ -1,75 +1,75 @@
 @echo off
 chcp 65001 >nul
-title Analisador de Artigos - Build Automático v2.0
+title Article Analyzer - Automatic Build v2.0
 
 echo.
 echo ================================================================
-echo 🚀 BUILD AUTOMÁTICO - ANALISADOR DE ARTIGOS v2.0
+echo 🚀 AUTOMATIC BUILD - ARTICLE ANALYZER v2.0
 echo ================================================================
 echo.
 
-:: Verifica se Python está disponível
+:: Check if Python is available
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python não encontrado!
+    echo ❌ Python not found!
     echo.
-    echo 💡 SOLUÇÕES:
-    echo    1. Baixe Python em: https://python.org
-    echo    2. Marque "Add Python to PATH" durante a instalação
-    echo    3. Reinicie o computador após instalação
+    echo 💡 SOLUTIONS:
+    echo    1. Download Python at: https://python.org
+    echo    2. Mark "Add Python to PATH" during installation
+    echo    3. Restart your computer after installation
     echo.
     pause
     exit /b 1
 )
 
-echo ✅ Python encontrado
+echo ✅ Python found
 
-:: Verifica se o arquivo principal existe
+:: Checks if the main file exists
 if not exist "article_analyzer.py" (
     echo.
-    echo ❌ Arquivo "article_analyzer.py" não encontrado!
+    echo ❌ File "article_analyzer.py" not found!
     echo.
-    echo 💡 SOLUÇÕES:
-    echo    1. Certifique-se de que todos os arquivos estão na pasta correta
-    echo    2. Execute este script na pasta do projeto
+    echo 💡 SOLUTIONS:
+    echo    1. Make sure all files are in the correct folder
+    echo    2. Run this script in the project folder
     echo.
     pause
     exit /b 1
 )
 
-echo ✅ Arquivo principal encontrado
+echo ✅ Main file found
 
-:: Executa o script de build Python
+:: Run the Python build script
 echo.
-echo 🔨 Iniciando processo de build...
+echo 🔨 Starting build process...
 echo.
 
 python build.py
 
-:: Verifica se o build foi bem-sucedido
+:: Checks if the build was successful
 if exist "dist\AnalisadorArtigos.exe" (
     echo.
     echo ================================================================
-    echo ✅ BUILD CONCLUÍDO COM SUCESSO!
+    echo ✅ BUILD COMPLETED SUCCESSFULLY!
     echo ================================================================
     echo.
-    echo 📁 Executável criado: dist\AnalisadorArtigos.exe
+    echo 📁 Executable created: dist\AnalisadorArtigos.exe
     echo.
     
     for %%F in (dist\AnalisadorArtigos.exe) do (
         set /a size_kb=%%~zF/1024
     )
-    echo 📏 Tamanho: !size_kb! KB
+    echo 📏 Size: !size_kb! KB
     echo.
     
-    :: Pergunta se quer abrir a pasta
-    set /p open_folder="📂 Abrir pasta dist? (s/N): "
+    :: Ask if you want to open the folder
+    set /p open_folder="📂 Open dist folder? (s/N): "
     if /i "!open_folder!"=="s" (
         explorer dist
     )
     
-    :: Pergunta se quer testar
-    set /p test_exe="🧪 Testar executável? (s/N): "
+    :: Ask if you want to test
+    set /p test_exe="🧪 Test executable? (s/N): "
     if /i "!test_exe!"=="s" (
         start "" "dist\AnalisadorArtigos.exe"
     )
@@ -77,31 +77,31 @@ if exist "dist\AnalisadorArtigos.exe" (
 ) else (
     echo.
     echo ================================================================
-    echo ❌ BUILD FALHOU
+    echo ❌ BUILD FAILED
     echo ================================================================
     echo.
-    echo 🔧 POSSÍVEIS SOLUÇÕES:
-    echo    1. Execute como Administrador
-    echo    2. Desative temporariamente o antivírus
-    echo    3. Verifique se há espaço em disco suficiente
-    echo    4. Tente executar: pip install --upgrade pyinstaller
+    echo 🔧 POSSIBLE SOLUTIONS:
+    echo    1. Run as Administrator
+    echo    2. Temporarily disable your antivirus
+    echo    3. Check if there is enough disk space
+    echo    4. Try to run: pip install --upgrade pyinstaller
     echo.
 )
 
 echo.
 echo ================================================================
-echo 📋 INFORMAÇÕES ADICIONAIS
+echo 📋 ADDITIONAL INFORMATION
 echo ================================================================
 echo.
-echo Para criar um instalador profissional:
-echo 1. Baixe o Inno Setup: https://jrsoftware.org/isinfo.php
-echo 2. Abra o arquivo "installer.iss"
-echo 3. Compile o instalador
+echo To create a professional installer:
+echo 1. Download Inno Setup: https://jrsoftware.org/isinfo.php
+echo 2. Open the file "installer.iss"
+echo 3. Compile the installer
 echo.
-echo Para distribuição:
-echo • Executável: dist\AnalisadorArtigos.exe
-echo • Documentação: README.md
-echo • Licença: LICENSE.txt
+echo For distribution:
+echo • Executable: dist\AnalisadorArtigos.exe
+echo • Documentation: README.md
+echo • License: LICENSE.txt
 echo.
 
 pause
