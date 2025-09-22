@@ -1,6 +1,6 @@
 """
-Analisador de Artigos e Livros - Versão 2.0
-Interface moderna e funcional para análise de listas acadêmicas
+Analisador de Artigos e Livros - Versão 2.1
+Interface moderna e funcional para análise de listas acadêmicas com tradução automática
 """
 
 import tkinter as tk
@@ -8,7 +8,145 @@ from tkinter import ttk, filedialog, messagebox
 import pandas as pd
 import os
 import sys
+import requests
+import time
 from pathlib import Path
+from urllib.parse import quote
+import re
+from threading import Thread
+
+
+class TranslationService:
+    """Serviço de tradução automática"""
+    
+    def __init__(self):
+        self.cache = {}  # Cache para evitar traduzir o mesmo texto múltiplas vezes
+        
+    def detect_language(self, text):
+        """Detecta se o texto está em inglês usando padrões comuns"""
+        if not text or len(text.strip()) < 3:
+            return "pt"
+            
+        text_lower = text.lower()
+        
+        # Palavras comuns em inglês acadêmico
+        english_indicators = [
+            'the', 'and', 'of', 'in', 'on', 'for', 'with', 'by', 'from', 'up', 'about', 'into',
+            'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among',
+            'analysis', 'research', 'study', 'review', 'development', 'application', 'approach',
+            'method', 'system', 'model', 'framework', 'theory', 'concept', 'investigation',
+            'examination', 'assessment', 'evaluation', 'implementation', 'design', 'performance'
+        ]
+        
+        # Palavras comuns em português
+        portuguese_indicators = [
+            'de', 'da', 'do', 'das', 'dos', 'em', 'na', 'no', 'nas', 'nos', 'para', 'por',
+            'com', 'sobre', 'entre', 'através', 'durante', 'antes', 'depois', 'acima', 'abaixo',
+            'análise', 'pesquisa', 'estudo', 'revisão', 'desenvolvimento', 'aplicação', 'abordagem',
+            'método', 'sistema', 'modelo', 'estrutura', 'teoria', 'conceito', 'investigação',
+            'exame', 'avaliação', 'implementação', 'design', 'desempenho', 'uma', 'um', 'umas', 'uns'
+        ]
+        
+        words = re.findall(r'\b\w+\b', text_lower)
+        
+        english_score = sum(1 for word in words if word in english_indicators)
+        portuguese_score = sum(1 for word in words if word in portuguese_indicators)
+        
+        # Se houver mais indicadores em inglês, considera inglês
+        if english_score > portuguese_score and english_score >= 2:
+            return "en"
+        else:
+            return "pt"
+    
+    def translate_google_api_fallback(self, text, from_lang="en", to_lang="pt"):
+        """Tradução usando API pública do Google Translate (método de fallback)"""
+        try:
+            # URL da API pública (não oficial)
+            base_url = "https://translate.googleapis.com/translate_a/single"
+            params = {
+                "client": "gtx",
+                "sl": from_lang,
+                "tl": to_lang,
+                "dt": "t",
+                "q": text
+            }
+            
+            response = requests.get(base_url, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if result and len(result) > 0 and len(result[0]) > 0:
+                    translated_text = ''.join([item[0] for item in result[0] if item[0]])
+                    return translated_text.strip()
+                    
+        except Exception as e:
+            print(f"Erro na tradução via Google API: {e}")
+            
+        return None
+    
+    def translate_mymemory(self, text, from_lang="en", to_lang="pt"):
+        """Tradução usando MyMemory API (gratuita)"""
+        try:
+            url = f"https://api.mymemory.translated.net/get"
+            params = {
+                'q': text,
+                'langpair': f'{from_lang}|{to_lang}'
+            }
+            
+            response = requests.get(url, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if 'responseData' in result and 'translatedText' in result['responseData']:
+                    translation = result['responseData']['translatedText']
+                    # Verifica se a tradução é válida (não é erro)
+                    if not translation.upper().startswith('PLEASE'):
+                        return translation.strip()
+                        
+        except Exception as e:
+            print(f"Erro na tradução via MyMemory: {e}")
+            
+        return None
+    
+    def translate_text(self, text):
+        """Traduz texto do inglês para português"""
+        if not text or text.strip() == "":
+            return text
+            
+        # Verifica cache
+        cache_key = text.lower().strip()
+        if cache_key in self.cache:
+            return self.cache[cache_key]
+        
+        # Detecta idioma
+        if self.detect_language(text) != "en":
+            # Se não é inglês, retorna o texto original
+            self.cache[cache_key] = text
+            return text
+        
+        # Tenta várias APIs de tradução
+        translation = None
+        
+        # Primeira tentativa: MyMemory (mais confiável)
+        translation = self.translate_mymemory(text)
+        
+        # Segunda tentativa: Google API (fallback)
+        if not translation:
+            time.sleep(0.5)  # Pausa para evitar rate limit
+            translation = self.translate_google_api_fallback(text)
+        
+        # Se conseguiu traduzir, salva no cache
+        if translation and translation.lower() != text.lower():
+            self.cache[cache_key] = translation
+            return translation
+        else:
+            # Se não conseguiu traduzir, salva o original no cache
+            self.cache[cache_key] = text
+            return text
+    
+    def get_cache_size(self):
+        """Retorna o tamanho do cache de traduções"""
+        return len(self.cache)
 
 
 class ModernStyle:
@@ -63,6 +201,23 @@ class ModernStyle:
             font=('Segoe UI', 11, 'bold')
         )
         
+        # Estilo para botão de tradução
+        style.configure(
+            'Translation.TButton',
+            padding=(20, 10),
+            font=('Segoe UI', 10),
+            borderwidth=1
+        )
+        
+        style.map(
+            'Translation.TButton',
+            background=[
+                ('active', '#059669'),
+                ('!active', '#10b981')
+            ],
+            foreground=[('active', 'white'), ('!active', 'white')]
+        )
+        
         # Estilo para labels
         style.configure(
             'Modern.TLabel',
@@ -98,6 +253,13 @@ class ModernStyle:
             font=('Segoe UI', 11, 'bold'),
             foreground=ModernStyle.COLORS['primary']
         )
+        
+        # Estilo para checkbutton
+        style.configure(
+            'Modern.TCheckbutton',
+            font=('Segoe UI', 10),
+            foreground=ModernStyle.COLORS['text_primary']
+        )
 
 
 class ArticleAnalyzer:
@@ -108,11 +270,14 @@ class ArticleAnalyzer:
         self.apply_modern_style()
         self.create_interface()
         
+        # Inicializa serviço de tradução
+        self.translator = TranslationService()
+        
     def setup_window(self):
         """Configura a janela principal"""
-        self.root.title("Analisador de Artigos e Livros v2.0")
-        self.root.geometry("900x700")
-        self.root.minsize(800, 600)
+        self.root.title("Analisador de Artigos e Livros v2.1 - Com Tradução")
+        self.root.geometry("950x750")
+        self.root.minsize(850, 650)
         
         # Configurar ícone (se disponível)
         try:
@@ -143,8 +308,11 @@ class ArticleAnalyzer:
         """Inicializa as variáveis da aplicação"""
         self.df = None
         self.all_titles = []
+        self.translated_titles = []
         self.duplicates = []
         self.file_path = tk.StringVar()
+        self.enable_translation = tk.BooleanVar(value=True)
+        self.translation_progress = tk.StringVar(value="")
         
     def apply_modern_style(self):
         """Aplica o estilo moderno"""
@@ -159,13 +327,16 @@ class ArticleAnalyzer:
         
         # Configurar grid
         main_container.columnconfigure(0, weight=1)
-        main_container.rowconfigure(2, weight=1)
+        main_container.rowconfigure(3, weight=1)
         
         # Cabeçalho
         self.create_header(main_container)
         
         # Seção de seleção de arquivo
         self.create_file_selection(main_container)
+        
+        # Seção de configurações de tradução
+        self.create_translation_options(main_container)
         
         # Área de resultados
         self.create_results_area(main_container)
@@ -179,7 +350,7 @@ class ArticleAnalyzer:
     def create_header(self, parent):
         """Cria o cabeçalho da aplicação"""
         header_frame = ttk.Frame(parent)
-        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 30))
+        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 25))
         header_frame.columnconfigure(0, weight=1)
         
         # Título principal
@@ -193,7 +364,7 @@ class ArticleAnalyzer:
         # Subtítulo
         subtitle_label = ttk.Label(
             header_frame,
-            text="Análise profissional de listas acadêmicas em formato CSV",
+            text="Análise profissional de listas acadêmicas em CSV com tradução automática",
             style='Modern.TLabel'
         )
         subtitle_label.grid(row=1, column=0, pady=(5, 0))
@@ -206,7 +377,7 @@ class ArticleAnalyzer:
             style='Modern.TLabelframe',
             padding=15
         )
-        file_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
+        file_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         file_frame.columnconfigure(1, weight=1)
         
         # Label
@@ -242,6 +413,43 @@ class ArticleAnalyzer:
         )
         analyze_btn.grid(row=1, column=0, columnspan=3, pady=(15, 0))
         
+    def create_translation_options(self, parent):
+        """Cria as opções de tradução"""
+        translation_frame = ttk.LabelFrame(
+            parent,
+            text="🌐 Configurações de Tradução",
+            style='Modern.TLabelframe',
+            padding=15
+        )
+        translation_frame.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        translation_frame.columnconfigure(1, weight=1)
+        
+        # Checkbox para habilitar tradução
+        self.translation_checkbox = ttk.Checkbutton(
+            translation_frame,
+            text="Traduzir títulos em inglês automaticamente",
+            variable=self.enable_translation,
+            style='Modern.TCheckbutton'
+        )
+        self.translation_checkbox.grid(row=0, column=0, sticky=tk.W, pady=(0, 10))
+        
+        # Label de progresso da tradução
+        self.translation_progress_label = ttk.Label(
+            translation_frame,
+            textvariable=self.translation_progress,
+            style='Modern.TLabel'
+        )
+        self.translation_progress_label.grid(row=1, column=0, sticky=tk.W)
+        
+        # Informação sobre a tradução
+        info_label = ttk.Label(
+            translation_frame,
+            text="💡 Dica: Títulos detectados em inglês serão traduzidos para português e exibidos junto ao original",
+            style='Modern.TLabel',
+            foreground=ModernStyle.COLORS['text_secondary']
+        )
+        info_label.grid(row=2, column=0, sticky=tk.W, pady=(10, 0))
+        
     def create_results_area(self, parent):
         """Cria a área de resultados"""
         results_frame = ttk.LabelFrame(
@@ -250,7 +458,7 @@ class ArticleAnalyzer:
             style='Modern.TLabelframe',
             padding=15
         )
-        results_frame.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 20))
+        results_frame.grid(row=3, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 15))
         results_frame.columnconfigure(0, weight=1)
         results_frame.rowconfigure(0, weight=1)
         
@@ -281,8 +489,8 @@ class ArticleAnalyzer:
     def create_export_buttons(self, parent):
         """Cria os botões de exportação"""
         export_frame = ttk.Frame(parent)
-        export_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
-        export_frame.columnconfigure((0, 1), weight=1)
+        export_frame.grid(row=4, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        export_frame.columnconfigure((0, 1, 2), weight=1)
         
         # Botão exportar todos
         self.export_all_btn = ttk.Button(
@@ -292,7 +500,17 @@ class ArticleAnalyzer:
             state=tk.DISABLED,
             style='Modern.TButton'
         )
-        self.export_all_btn.grid(row=0, column=0, padx=(0, 10), sticky=(tk.W, tk.E))
+        self.export_all_btn.grid(row=0, column=0, padx=(0, 5), sticky=(tk.W, tk.E))
+        
+        # Botão exportar com tradução
+        self.export_translated_btn = ttk.Button(
+            export_frame,
+            text="🌐 Exportar com Traduções",
+            command=self.export_with_translations,
+            state=tk.DISABLED,
+            style='Translation.TButton'
+        )
+        self.export_translated_btn.grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
         
         # Botão exportar duplicados
         self.export_duplicates_btn = ttk.Button(
@@ -302,7 +520,7 @@ class ArticleAnalyzer:
             state=tk.DISABLED,
             style='Modern.TButton'
         )
-        self.export_duplicates_btn.grid(row=0, column=1, padx=(10, 0), sticky=(tk.W, tk.E))
+        self.export_duplicates_btn.grid(row=0, column=2, padx=(5, 0), sticky=(tk.W, tk.E))
         
     def create_status_bar(self, parent):
         """Cria a barra de status"""
@@ -314,11 +532,16 @@ class ArticleAnalyzer:
             relief=tk.SUNKEN,
             padding=(10, 5)
         )
-        status_label.grid(row=4, column=0, sticky=(tk.W, tk.E))
+        status_label.grid(row=5, column=0, sticky=(tk.W, tk.E))
         
     def update_status(self, message):
         """Atualiza a mensagem de status"""
         self.status_var.set(message)
+        self.root.update_idletasks()
+        
+    def update_translation_progress(self, message):
+        """Atualiza o progresso da tradução"""
+        self.translation_progress.set(message)
         self.root.update_idletasks()
         
     def browse_file(self):
@@ -383,6 +606,61 @@ class ArticleAnalyzer:
         
         return title_col, author_col
     
+    def translate_titles_async(self, titles):
+        """Traduz títulos em thread separada"""
+        def translate_worker():
+            translated = []
+            total = len(titles)
+            
+            for i, title in enumerate(titles):
+                if self.enable_translation.get():
+                    # Extrai apenas o título (remove autor se existir)
+                    title_only = title.split(" — ")[0] if " — " in title else title
+                    
+                    # Atualiza progresso
+                    progress_msg = f"Traduzindo... {i+1}/{total} ({((i+1)/total)*100:.0f}%)"
+                    self.root.after(0, lambda msg=progress_msg: self.update_translation_progress(msg))
+                    
+                    # Traduz o título
+                    translated_title = self.translator.translate_text(title_only)
+                    
+                    # Se foi traduzido (diferente do original), adiciona a tradução
+                    if (translated_title.lower() != title_only.lower() and 
+                        self.translator.detect_language(title_only) == "en"):
+                        
+                        if " — " in title:
+                            author_part = " — " + title.split(" — ")[1]
+                            full_entry = f"{title_only}\n   🔄 {translated_title}{author_part}"
+                        else:
+                            full_entry = f"{title_only}\n   🔄 {translated_title}"
+                        translated.append(full_entry)
+                    else:
+                        translated.append(title)
+                else:
+                    translated.append(title)
+                    
+                # Pequena pausa para não sobrecarregar as APIs
+                time.sleep(0.1)
+            
+            # Atualiza a interface principal com os resultados
+            self.root.after(0, lambda: self.finish_translation(translated))
+            
+        # Inicia a thread de tradução
+        thread = Thread(target=translate_worker, daemon=True)
+        thread.start()
+    
+    def finish_translation(self, translated_titles):
+        """Finaliza o processo de tradução"""
+        self.translated_titles = translated_titles
+        self.update_translation_progress(f"✅ Tradução concluída! Cache: {self.translator.get_cache_size()} entradas")
+        
+        # Reexibe os resultados com as traduções
+        self.display_results_with_translations()
+        
+        # Habilita o botão de exportação com tradução
+        if self.translated_titles:
+            self.export_translated_btn.config(state=tk.NORMAL)
+    
     def analyze_file(self):
         """Analisa o arquivo CSV selecionado"""
         if not self.file_path.get():
@@ -434,6 +712,13 @@ class ArticleAnalyzer:
         # Habilita botões de exportação
         self.export_all_btn.config(state=tk.NORMAL)
         self.export_duplicates_btn.config(state=tk.NORMAL)
+        
+        # Inicia tradução se habilitada
+        if self.enable_translation.get() and self.all_titles:
+            self.update_translation_progress("Iniciando tradução...")
+            self.translate_titles_async(self.all_titles)
+        else:
+            self.update_translation_progress("")
         
         self.update_status("Análise concluída com sucesso!")
         
@@ -501,6 +786,13 @@ class ArticleAnalyzer:
         if author_col:
             result_text += f"• Coluna de autores: '{author_col}'\n"
         
+        # Informações de tradução
+        if self.enable_translation.get():
+            result_text += f"• Tradução automática: HABILITADA 🌐\n"
+            result_text += f"• Cache de traduções: {self.translator.get_cache_size()} entradas\n"
+        else:
+            result_text += f"• Tradução automática: DESABILITADA\n"
+        
         result_text += "\n" + "═" * 70 + "\n\n"
         
         # Lista completa
@@ -510,10 +802,74 @@ class ArticleAnalyzer:
         for i, title in enumerate(self.all_titles, 1):
             result_text += f"{i:4d}. {title}\n"
         
-        result_text += f"\n✅ Total listado: {len(self.all_titles):,} registros\n\n"
+        result_text += f"\n✅ Total listado: {len(self.all_titles):,} registros\n"
+        
+        if self.enable_translation.get():
+            result_text += "\n💡 NOTA: Títulos em inglês serão traduzidos automaticamente\n"
+            result_text += "    🔄 = Tradução para português\n"
+        
+        result_text += "\n"
         
         # Duplicados (se houver)
         if duplicate_count > 0:
+            result_text += "🔍 REGISTROS DUPLICADOS IDENTIFICADOS\n"
+            result_text += "─" * 40 + "\n"
+            
+            for i, duplicate in enumerate(self.duplicates, 1):
+                result_text += f"{i:4d}. {duplicate}\n"
+            
+            result_text += f"\n⚠️  Total de duplicados: {len(self.duplicates):,} registros\n"
+            result_text += "\n💡 RECOMENDAÇÃO: Revise os duplicados antes de prosseguir\n"
+        else:
+            result_text += "✅ NENHUM DUPLICADO ENCONTRADO\n"
+            result_text += "─" * 40 + "\n"
+            result_text += "Parabéns! Sua lista não contém registros duplicados.\n"
+        
+        result_text += "\n" + "═" * 70 + "\n"
+        result_text += "📤 Use os botões abaixo para exportar os resultados\n"
+        
+        self.results_text.insert(1.0, result_text)
+    
+    def display_results_with_translations(self):
+        """Exibe os resultados com as traduções incluídas"""
+        self.results_text.delete(1.0, tk.END)
+        
+        # Cabeçalho estilizado
+        result_text = "═" * 70 + "\n"
+        result_text += "📊 ANÁLISE COMPLETA COM TRADUÇÕES\n"
+        result_text += "═" * 70 + "\n\n"
+        
+        # Resumo executivo
+        result_text += "📋 RESUMO EXECUTIVO\n"
+        result_text += "─" * 40 + "\n"
+        result_text += f"• Total de registros analisados: {len(self.all_titles):,}\n"
+        result_text += f"• Registros únicos: {len(self.all_titles) - len(self.duplicates):,}\n"
+        result_text += f"• Duplicados encontrados: {len(self.duplicates):,}\n"
+        
+        # Conta quantos títulos foram traduzidos
+        translated_count = sum(1 for title in self.translated_titles if "🔄" in title)
+        result_text += f"• Títulos traduzidos: {translated_count:,}\n"
+        result_text += f"• Cache de traduções: {self.translator.get_cache_size()} entradas\n"
+        
+        if len(self.duplicates) > 0:
+            percentage = (len(self.duplicates) / len(self.all_titles)) * 100
+            result_text += f"• Taxa de duplicação: {percentage:.1f}%\n"
+        
+        result_text += "\n" + "═" * 70 + "\n\n"
+        
+        # Lista completa com traduções
+        result_text += "📚 LISTA COMPLETA COM TRADUÇÕES\n"
+        result_text += "─" * 40 + "\n"
+        result_text += "🔄 = Tradução automática para português\n\n"
+        
+        for i, title in enumerate(self.translated_titles, 1):
+            result_text += f"{i:4d}. {title}\n"
+        
+        result_text += f"\n✅ Total listado: {len(self.translated_titles):,} registros\n"
+        result_text += f"✅ Traduzidos: {translated_count:,} títulos\n\n"
+        
+        # Duplicados (se houver)
+        if len(self.duplicates) > 0:
             result_text += "🔍 REGISTROS DUPLICADOS IDENTIFICADOS\n"
             result_text += "─" * 40 + "\n"
             
@@ -562,6 +918,73 @@ class ArticleAnalyzer:
                     f"Lista completa exportada com sucesso!\n\n"
                     f"Arquivo: {Path(file_path).name}\n"
                     f"Total de registros: {len(self.all_titles)}"
+                )
+                
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao exportar arquivo: {str(e)}")
+    
+    def export_with_translations(self):
+        """Exporta lista com traduções para CSV"""
+        if not self.translated_titles:
+            messagebox.showwarning("Aviso", "Não há dados traduzidos para exportar. Execute a análise primeiro.")
+            return
+        
+        file_path = filedialog.asksaveasfilename(
+            title="Salvar lista com traduções",
+            defaultextension=".csv",
+            filetypes=[("Arquivos CSV", "*.csv")]
+        )
+        
+        if file_path:
+            try:
+                export_data = []
+                translated_count = 0
+                
+                for i, title in enumerate(self.translated_titles, 1):
+                    # Separa original e tradução se houver
+                    if "🔄" in title:
+                        translated_count += 1
+                        lines = title.split("\n")
+                        original = lines[0].strip()
+                        translation = lines[1].replace("   🔄 ", "").strip()
+                        
+                        export_data.append({
+                            "Número": i, 
+                            "Título Original": original,
+                            "Tradução (PT-BR)": translation,
+                            "Status": "Traduzido"
+                        })
+                    else:
+                        export_data.append({
+                            "Número": i, 
+                            "Título Original": title,
+                            "Tradução (PT-BR)": "",
+                            "Status": "Original em português"
+                        })
+                
+                # Adiciona resumo
+                export_data.append({
+                    "Número": "", 
+                    "Título Original": "",
+                    "Tradução (PT-BR)": "",
+                    "Status": ""
+                })
+                export_data.append({
+                    "Número": "RESUMO:", 
+                    "Título Original": f"Total: {len(self.translated_titles)} registros",
+                    "Tradução (PT-BR)": f"Traduzidos: {translated_count}",
+                    "Status": f"Cache: {self.translator.get_cache_size()} entradas"
+                })
+                
+                df_export = pd.DataFrame(export_data)
+                df_export.to_csv(file_path, index=False, encoding='utf-8-sig')
+                
+                messagebox.showinfo(
+                    "Exportação Concluída", 
+                    f"Lista com traduções exportada com sucesso!\n\n"
+                    f"Arquivo: {Path(file_path).name}\n"
+                    f"Total de registros: {len(self.translated_titles)}\n"
+                    f"Traduzidos: {translated_count}"
                 )
                 
             except Exception as e:
