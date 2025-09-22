@@ -95,101 +95,101 @@ def create_config_file():
     try:
         with open('config.json', 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
-        print("✅ Arquivo de configuração criado")
+        print("✅ Configuration file created")
     except Exception as e:
-        print(f"⚠️  Erro ao criar configuração: {e}")
+        print(f"⚠️  Error creating configuration: {e}")
 
 
 def create_documentation():
     """Cria documentação completa"""
-    print("📚 Criando documentação...")
+    print("📚 Creating documentation...")
     
     # Manual do usuário
-    user_manual = """# Manual do Usuário - Analisador de Artigos v2.0
+    user_manual = """# User Manual - Article Analyzer v2.0
 
-## Introdução
-O Analisador de Artigos é um software profissional desenvolvido para auxiliar pesquisadores, bibliotecários e acadêmicos na análise de listas de artigos científicos e livros.
+## Introduction
+Article Analyzer is professional software designed to assist researchers, librarians, and academics in analyzing lists of scientific articles and books.
 
-## Funcionalidades Principais
+## Main Features
 
-### ✅ Análise Automática
-- Detecção automática de colunas de títulos e autores
-- Validação de formato CSV
-- Processamento rápido de grandes listas
+### ✅ Automatic Analysis
+- Automatic detection of title and author columns
+- CSV format validation
+- Fast processing of large lists
 
-### 🔍 Detecção de Duplicados
-- Identificação inteligente de registros duplicados
-- Comparação por título e autor
-- Relatório detalhado de duplicatas
+### 🔍 Duplicate Detection
+- Intelligent identification of duplicate records
+- Comparison by title and author
+- Detailed duplicate report
 
-### 📊 Relatórios Detalhados
-- Contagem total de registros
-- Lista completa formatada
-- Estatísticas de duplicação
-- Interface visual moderna
+### 📊 Detailed Reports
+- Total record count
+- Complete formatted list
+- Duplication statistics
+- Modern visual interface
 
-### 📤 Exportação
-- Exportação da lista completa
-- Exportação apenas dos duplicados
-- Formato CSV compatível com Excel
-- Numeração automática
+### 📤 Export
+- Export the complete list
+- Export only duplicates
+- Excel-compatible CSV format
+- Automatic numbering
 
-## Como Usar
+## How to Use
 
-### 1. Preparar o Arquivo CSV
-Seu arquivo deve conter pelo menos uma coluna com títulos. Exemplos de nomes aceitos:
-- **Títulos**: title, título, titulo, nome, name
-- **Autores**: author, autor, authors, autores
+### 1. Prepare the CSV File
+Your file must contain at least one column with headings. Examples of accepted names:
+- **Titles**: title, title, title, name, name
+- **Authors**: author, author, authors, authors
 
-### 2. Abrir o Software
-Execute o arquivo `AnalisadorArtigos.exe`
+### 2. Open the Software
+Run the file `AnalisadorArtigos.exe`
 
-### 3. Selecionar Arquivo
-1. Clique em "📂 Procurar"
-2. Navegue até seu arquivo CSV
-3. Selecione o arquivo e clique em "Abrir"
+### 3. Select File
+1. Click "📂 Browse"
+2. Navigate to your CSV file
+3. Select the file and click "Open"
 
-### 4. Analisar
-1. Clique em "🔍 Analisar Arquivo"
-2. Aguarde o processamento
-3. Visualize os resultados na tela
+### 4. Analyze
+1. Click "🔍 Analyze File"
+2. Wait for processing
+3. View the results on the screen
 
-### 5. Exportar Resultados
-- **Lista Completa**: Clique em "📋 Exportar Lista Completa"
-- **Apenas Duplicados**: Clique em "🔍 Exportar Duplicados"
+### 5. Export Results
+- **Full List**: Click "📋 Export Full List"
+- **Duplicates Only**: Click "🔍 Export Duplicates"
 
-## Formatos Suportados
+## Supported Formats
 - CSV (UTF-8)
 - CSV (Latin1/ANSI)
-- Separadores: vírgula, ponto-e-vírgula
+- Separators: comma, semicolon
 
-## Requisitos do Sistema
-- Windows 10 ou superior
-- 100 MB de espaço livre
-- 4 GB de RAM (recomendado)
+## System Requirements
+- Windows 10 or higher
+- 100 MB of free space
+- 4 GB of RAM (recommended)
 
-## Solução de Problemas
+## Troubleshooting
 
-### Arquivo não é reconhecido
-- Verifique se o arquivo é CSV válido
-- Certifique-se de que há colunas de títulos
-- Tente salvar novamente como CSV UTF-8
+### File not recognized
+- Check if the file is a valid CSV file
+- Make sure there are title columns
+- Try saving again as a UTF-8 CSV file
 
-### Erro ao abrir arquivo
-- Verifique permissões do arquivo
-- Feche o arquivo no Excel antes de analisar
-- Tente copiar o arquivo para outro local
+### Error opening file
+- Check file permissions
+- Close the file in Excel before analyzing
+- Try copying the file to another location
 
-### Duplicados não detectados
-- Verifique se há coluna de autores
-- Títulos devem ser idênticos para detecção
-- Espaços extras podem afetar a comparação
+### Duplicates not detected
+- Check if there is an author column
+- Titles must be identical for detection
+- Extra spaces may affect the comparison
 
-## Suporte
-Para dúvidas ou problemas, consulte o arquivo README.md ou contate o desenvolvedor.
+## Support
+For questions or problems, see the README.md file or contact the developer.
 
 ---
-**Analisador de Artigos v2.0** - Software profissional para análise acadêmica
+**Article Analyzer v2.0** - Professional software for academic analysis
 """
     
     try:
@@ -198,15 +198,15 @@ Para dúvidas ou problemas, consulte o arquivo README.md ou contate o desenvolve
         
         with open(docs_path / 'manual_usuario.md', 'w', encoding='utf-8') as f:
             f.write(user_manual)
-        print("✅ Manual do usuário criado")
+        print("✅ User manual created")
         
     except Exception as e:
-        print(f"⚠️  Erro ao criar documentação: {e}")
+        print(f"⚠️  Error creating documentation: {e}")
 
 
 def create_all_files():
-    """Cria todos os arquivos necessários do projeto"""
-    print("📄 Criando todos os arquivos do projeto...")
+    """Creates all necessary project files"""
+    print("📄 Creating all project files...")
     
     create_project_structure()
     create_version_info()
@@ -215,11 +215,11 @@ def create_all_files():
 
 
 def run_full_build():
-    """Executa o build completo usando o script build.py"""
-    print("\n🚀 Iniciando build completo...")
+    """Run the full build using the build.py script"""
+    print("\n🚀 Starting full build...")
     
     try:
-        # Executa o script de build
+        # Run the build script
         result = subprocess.run([sys.executable, 'build.py'], 
                                check=True, capture_output=True, text=True)
         
@@ -227,35 +227,35 @@ def run_full_build():
         return True
         
     except subprocess.CalledProcessError as e:
-        print(f"❌ Erro no build: {e}")
+        print(f"❌ Build error: {e}")
         if e.stdout:
-            print("📄 Saída:", e.stdout[-300:])
+            print("📄 Output:", e.stdout[-300:])
         if e.stderr:
-            print("🚫 Erro:", e.stderr[-300:])
+            print("🚫 Error:", e.stderr[-300:])
         return False
     except Exception as e:
-        print(f"❌ Erro inesperado: {e}")
+        print(f"❌ Unexpected error: {e}")
         return False
 
 
 def create_distribution_package():
-    """Cria pacote completo para distribuição"""
-    print("\n📦 Criando pacote de distribuição...")
+    """Creates complete package for distribution"""
+    print("\n📦 Creating a distribution package...")
     
-    # Verifica se o executável existe
+    # Checks if the executable exists
     exe_path = Path('dist/AnalisadorArtigos.exe')
     if not exe_path.exists():
         print("❌ Executável não encontrado. Execute o build primeiro.")
         return False
     
-    # Cria pasta de distribuição
+    # Create distribution folder
     dist_folder = Path('AnalisadorArtigos_v2.0_Distribuicao')
     if dist_folder.exists():
         shutil.rmtree(dist_folder)
     
     dist_folder.mkdir()
     
-    # Copia arquivos necessários
+    # Copy necessary files
     files_to_copy = [
         ('dist/AnalisadorArtigos.exe', 'AnalisadorArtigos.exe'),
         ('README.md', 'README.md'),
@@ -267,103 +267,103 @@ def create_distribution_package():
         src_path = Path(src)
         if src_path.exists():
             shutil.copy2(src_path, dist_folder / dst)
-            print(f"✅ Copiado: {dst}")
+            print(f"✅ Copied: {dst}")
     
-    # Cria arquivo de instruções rápidas
-    quick_start = """# INÍCIO RÁPIDO
+    # Creates quick instructions file
+    quick_start = """# QUICK START
 
-## Para usar o software:
-1. Execute: AnalisadorArtigos.exe
-2. Selecione seu arquivo CSV
-3. Clique em "Analisar Arquivo"
-4. Visualize os resultados
-5. Exporte as listas
+## To use the software:
+1. Run: ArticleAnalyzer.exe
+2. Select your CSV file
+3. Click "Analyze File"
+4. View the results
+5. Export the lists
 
-## Para mais informações:
-- Leia o Manual_do_Usuario.md
-- Consulte o README.md
+## For more information:
+- Read the User_Manual.md
+- See the README.md
 
-Versão: 2.0.0
+Version: 2.0.0
 """
     
     with open(dist_folder / 'INICIO_RAPIDO.txt', 'w', encoding='utf-8') as f:
         f.write(quick_start)
     
-    print(f"✅ Pacote de distribuição criado: {dist_folder}")
+    print(f"✅ Distribution package created: {dist_folder}")
     return True
 
 
 def main():
     """Função principal do setup completo"""
     print("=" * 60)
-    print("🏗️  SETUP COMPLETO - ANALISADOR DE ARTIGOS v2.0")
+    print("🏗️  COMPLETE SETUP - ARTICLE ANALYZER v2.0")
     print("=" * 60)
     
     # Verifica se o arquivo principal existe
     if not Path('article_analyzer.py').exists():
-        print("❌ Arquivo article_analyzer.py não encontrado!")
-        print("💡 Certifique-se de que está na pasta correta do projeto")
-        input("Pressione Enter para sair...")
+        print("❌ File article_analyzer.py not found!")
+        print("💡 Make sure you are in the correct project folder")
+        input("Press Enter to exit...")
         return
     
     # 1. Criar estrutura e arquivos
-    print("\n📋 FASE 1: Estrutura do Projeto")
+    print("\n📋 PHASE 1: Project Structure")
     create_all_files()
     
     # 2. Executar build
-    print("\n📋 FASE 2: Compilação")
+    print("\n📋 PHASE 2: Compilation")
     if not run_full_build():
-        print("❌ Falha no build. Verifique os erros acima.")
-        input("Pressione Enter para sair...")
+        print("❌ Build failed. Check the errors above.")
+        input("Press Enter to exit...")
         return
     
     # 3. Criar pacote de distribuição
-    print("\n📋 FASE 3: Pacote de Distribuição")
+    print("\n📋 PHASE 3: Distribution Package")
     if not create_distribution_package():
-        print("❌ Falha ao criar pacote de distribuição.")
+        print("❌ Failed to create distribution package.")
     
     # 4. Resumo final
     print("\n" + "=" * 60)
-    print("🎉 SETUP COMPLETO FINALIZADO!")
+    print("🎉 COMPLETE SETUP FINISHED!")
     print("=" * 60)
     
-    print("📁 Arquivos criados:")
-    print("   • dist/AnalisadorArtigos.exe (executável principal)")
-    print("   • AnalisadorArtigos_v2.0_Distribuicao/ (pacote completo)")
-    print("   • docs/manual_usuario.md (documentação)")
-    print("   • config.json (configurações)")
-    print("   • installer.iss (script do instalador)")
+    print("📁 Files created:")
+    print("   • dist/AnalisadorArtigos.exe (main executable)")
+    print("   • AnalisadorArtigos_v2.0_Distribuicao/ (full package)")
+    print("   • docs/manual_usuario.md (documentation)")
+    print("   • config.json (settings)")
+    print("   • installer.iss (installer script)")
     
-    print("\n📦 Pronto para distribuição:")
-    print("   • Executável standalone: dist/AnalisadorArtigos.exe")
-    print("   • Pacote completo: AnalisadorArtigos_v2.0_Distribuicao/")
-    print("   • Instalador (use Inno Setup): installer.iss")
+    print("\n📦 Ready for distribution:")
+    print("   • Standalone executable: dist/AnalisadorArtigos.exe")
+    print("   • Complete package: AnalisadorArtigos_v2.0_Distribuicao/")
+    print("   • Installer (use Inno Setup): installer.iss")
     
-    print("\n🚀 Próximos passos:")
-    print("1. Teste o executável")
-    print("2. Distribua o pacote completo")
-    print("3. Para instalador profissional, use o Inno Setup")
+    print("\n🚀 Next steps:")
+    print("1. Test the executable")
+    print("2. Distribute the complete package")
+    print("3. For professional installer, use Inno Setup")
     
     # Pergunta final
-    choice = input("\n🧪 O que deseja fazer agora?\n"
-                  "1. Testar executável\n"
-                  "2. Abrir pasta de distribuição\n"
-                  "3. Sair\n"
-                  "Escolha (1-3): ").strip()
+    choice = input("\n🧪 What do you want to do now?\n"
+                  "1. Test executable\n"
+                  "2. Open distribution folder\n"
+                  "3. Exit\n"
+                  "Choose a number (1-3): ").strip()
     
     if choice == '1':
         try:
             exe_path = Path('dist/AnalisadorArtigos.exe')
             if exe_path.exists():
-                print("🚀 Abrindo executável...")
+                print("🚀 Opening executable...")
                 if os.name == 'nt':  # Windows
                     os.startfile(str(exe_path))
                 else:
                     subprocess.run([str(exe_path)])
             else:
-                print("❌ Executável não encontrado")
+                print("❌ Executable not found")
         except Exception as e:
-            print(f"❌ Erro ao abrir executável: {e}")
+            print(f"❌ Error opening executable: {e}")
     
     elif choice == '2':
         try:
@@ -374,12 +374,12 @@ def main():
                 else:
                     subprocess.run(['xdg-open', str(dist_folder)])
             else:
-                print("❌ Pasta de distribuição não encontrada")
+                print("❌ Distribution folder not found")
         except Exception as e:
-            print(f"❌ Erro ao abrir pasta: {e}")
+            print(f"❌ Error opening folder: {e}")
     
-    print("\n✅ Setup finalizado com sucesso!")
-    input("Pressione Enter para sair...")
+    print("\n✅ Setup completed successfully!")
+    input("Press Enter to exit...")
 
 
 if __name__ == "__main__":
