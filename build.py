@@ -12,15 +12,15 @@ from pathlib import Path
 
 
 def print_header():
-    """Imprime cabeçalho do script"""
+    """Prints script header"""
     print("=" * 60)
-    print("🚀 BUILD ANALISADOR DE ARTIGOS v2.0")
+    print("🚀 BUILD ARTICLE ANALYZER v2.0")
     print("=" * 60)
 
 
 def check_requirements():
-    """Verifica se os arquivos necessários existem"""
-    print("🔍 Verificando arquivos necessários...")
+    """Checks if required files exist"""
+    print("🔍 Checking for required files...")
     
     required_files = ['article_analyzer.py']
     missing_files = []
@@ -29,42 +29,42 @@ def check_requirements():
         if not os.path.exists(file):
             missing_files.append(file)
         else:
-            print(f"✅ {file} encontrado")
+            print(f"✅ {file} found")
     
     if missing_files:
-        print(f"❌ Arquivos faltando: {', '.join(missing_files)}")
+        print(f"❌ Missing files: {', '.join(missing_files)}")
         return False
     
     return True
 
 
 def install_dependencies():
-    """Instala dependências necessárias"""
-    print("\n📦 Instalando dependências...")
+    """Installs required dependencies"""
+    print("\n📦 Installing dependencies...")
     
     dependencies = ['pandas', 'pyinstaller']
     
     for dep in dependencies:
         try:
             __import__(dep.replace('-', '_'))
-            print(f"✅ {dep} já instalado")
+            print(f"✅ {dep} already installed")
         except ImportError:
-            print(f"📥 Instalando {dep}...")
+            print(f"📥 Installing {dep}...")
             try:
                 subprocess.run([
                     sys.executable, '-m', 'pip', 'install', dep
                 ], check=True, capture_output=True)
-                print(f"✅ {dep} instalado com sucesso")
+                print(f"✅ {dep} successfully installed")
             except subprocess.CalledProcessError as e:
-                print(f"❌ Erro ao instalar {dep}: {e}")
+                print(f"❌ Error installing {dep}: {e}")
                 return False
     
     return True
 
 
 def clean_build_dirs():
-    """Remove diretórios de build anteriores"""
-    print("\n🧹 Limpando builds anteriores...")
+    """Removes previous build directories"""
+    print("\n🧹 Cleaning up previous builds...")
     
     dirs_to_clean = ['build', 'dist', '__pycache__']
     files_to_clean = ['*.spec']
@@ -73,58 +73,57 @@ def clean_build_dirs():
         if os.path.exists(dir_name):
             try:
                 shutil.rmtree(dir_name)
-                print(f"✅ Removido: {dir_name}")
+                print(f"✅ Removed: {dir_name}")
             except Exception as e:
-                print(f"⚠️  Não foi possível remover {dir_name}: {e}")
+                print(f"⚠️  Could not remove {dir_name}: {e}")
     
-    # Remove arquivos spec antigos
+    # Remove old spec files
     for spec_file in Path('.').glob('*.spec'):
         try:
             spec_file.unlink()
-            print(f"✅ Removido: {spec_file}")
+            print(f"✅ Removed: {spec_file}")
         except Exception as e:
-            print(f"⚠️  Não foi possível remover {spec_file}: {e}")
+            print(f"⚠️  Could not remove {spec_file}: {e}")
 
 
 def create_build_files():
-    """Cria arquivos auxiliares para o build"""
-    print("\n📄 Criando arquivos auxiliares...")
+    """Creates auxiliary files for the build"""
+    print("\n📄 Creating auxiliary files...")
     
     # README.md
-    readme_content = """# Analisador de Artigos e Livros v2.0
+    readme_content = """# Article and Book Analyzer v2.0
 
-## Descrição
-Software profissional para análise de listas de artigos científicos e livros acadêmicos.
+## Description
+Professional software for analyzing lists of scientific articles and academic books.
 
-## Funcionalidades
-✅ Interface moderna e intuitiva
-📊 Análise automática de arquivos CSV
-📋 Listagem completa de títulos
-🔍 Detecção inteligente de duplicados
-📤 Exportação para CSV
-⚡ Processamento rápido e eficiente
+## Features
+✅ Modern and intuitive interface
+📊 Automatic analysis of CSV files
+📋 Complete title listing
+🔍 Intelligent duplicate detection
+📤 Export to CSV
+⚡ Fast and efficient processing
 
-## Como usar
-1. Execute o AnalisadorArtigos.exe
-2. Clique em "Procurar" para selecionar seu arquivo CSV
-3. Clique em "Analisar Arquivo"
-4. Visualize os resultados detalhados
-5. Exporte as listas conforme necessário
+## How to use
+1. Run ArticleAnalyzer.exe
+2. Click "Browse" to select your CSV file
+3. Click "Analyze File"
+4. View detailed results
+5. Export lists as needed
 
-## Requisitos do arquivo CSV
-- Deve conter uma coluna de títulos (title, título, nome, etc.)
-- Opcionalmente uma coluna de autores (author, autor, etc.)
-- Formato de texto padrão CSV
+## CSV file requirements
+- Must contain a title column (title, title, name, etc.)
+- Optionally, an author column (author, author, etc.)
+- Standard CSV text format
 
-## Suporte
-Desenvolvido com Python e Tkinter para máxima compatibilidade.
-Versão: 2.0.0
+## Support
+Developed with Python and Tkinter for maximum compatibility. Version: 2.0.0
 """
     
     # License
     license_content = """MIT License
 
-Copyright (c) 2025 Analisador de Artigos e Livros
+Copyright (c) 2025 Article and Book Analyzer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software to deal in the Software without restriction.
@@ -136,32 +135,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
     try:
         with open('README.md', 'w', encoding='utf-8') as f:
             f.write(readme_content)
-        print("✅ README.md criado")
+        print("✅ README.md created")
         
         with open('LICENSE.txt', 'w', encoding='utf-8') as f:
             f.write(license_content)
-        print("✅ LICENSE.txt criado")
+        print("✅ LICENSE.txt created")
         
     except Exception as e:
-        print(f"⚠️  Erro ao criar arquivos: {e}")
+        print(f"⚠️  Error creating files: {e}")
 
 
 def build_executable():
-    """Compila o executável usando PyInstaller"""
-    print("\n🔨 Compilando executável...")
+    """Compile the executable using PyInstaller"""
+    print("\n🔨 Compiling executable...")
     
     # Comando básico e funcional
     build_command = [
         sys.executable, '-m', 'PyInstaller',
-        '--onefile',                    # Arquivo único
-        '--windowed',                   # Sem console
-        '--name=AnalisadorArtigos',     # Nome do executável
-        '--clean',                      # Limpa cache
-        '--noconfirm',                  # Não pede confirmação
-        'article_analyzer.py'           # Arquivo fonte
+        '--onefile',                    # Single file
+        '--windowed',                   # No console
+        '--name=AnalisadorArtigos',     # Executable name
+        '--clean',                      # Clear cache
+        '--noconfirm',                  # Does not ask for confirmation
+        'article_analyzer.py'           # Source file
     ]
     
-    print("📋 Comando: " + ' '.join(build_command))
+    print("📋 Command: " + ' '.join(build_command))
     
     try:
         # Executa o build
@@ -173,64 +172,64 @@ def build_executable():
             timeout=300  # 5 minutos timeout
         )
         
-        print("✅ Compilação concluída!")
+        print("✅ Compilation completed!")
         
-        # Verifica se o executável foi criado
+        # Checks if the executable was created
         exe_path = Path('dist/AnalisadorArtigos.exe')
         if exe_path.exists():
             size_mb = exe_path.stat().st_size / (1024 * 1024)
-            print(f"📁 Executável criado: {exe_path}")
-            print(f"📏 Tamanho: {size_mb:.1f} MB")
+            print(f"📁 Executable created: {exe_path}")
+            print(f"📏 Size: {size_mb:.1f} MB")
             return True
         else:
-            print("❌ Executável não foi criado")
+            print("❌ Executable not created")
             return False
             
     except subprocess.TimeoutExpired:
-        print("⏱️  Timeout - Build demorou mais de 5 minutos")
+        print("⏱️  Timeout - Build took more than 5 minutes")
         return False
         
     except subprocess.CalledProcessError as e:
-        print(f"❌ Erro na compilação: {e}")
+        print(f"❌ Compilation error: {e}")
         if e.stdout:
-            print("📄 Saída padrão:")
-            print(e.stdout[-500:])  # Últimas 500 chars
+            print("📄 Standard output:")
+            print(e.stdout[-500:])  # Last 500 chars
         if e.stderr:
-            print("🚫 Saída de erro:")
-            print(e.stderr[-500:])  # Últimas 500 chars
+            print("🚫 Error output:")
+            print(e.stderr[-500:])  # Last 500 chars
         return False
         
     except Exception as e:
-        print(f"❌ Erro inesperado: {e}")
+        print(f"❌ Unexpected error: {e}")
         return False
 
 
 def test_executable():
-    """Testa se o executável funciona"""
-    print("\n🧪 Testando executável...")
+    """Tests if the executable works"""
+    print("\n🧪 Testing executable...")
     
     exe_path = Path('dist/AnalisadorArtigos.exe')
     if not exe_path.exists():
-        print("❌ Executável não encontrado para teste")
+        print("❌ Executable not found for testing")
         return False
     
     try:
-        # Testa apenas se o arquivo é executável (não abre a interface)
+        # Only tests whether the file is executable (does not open the interface)
         result = subprocess.run([str(exe_path)], timeout=5, capture_output=True)
-        print("✅ Executável parece estar funcionando")
+        print("✅ Executable appears to be working")
         return True
     except subprocess.TimeoutExpired:
-        print("✅ Executável iniciou (timeout normal para interface gráfica)")
+        print("✅ Executable started (normal timeout for graphical interface)")
         return True
     except Exception as e:
-        print(f"⚠️  Não foi possível testar automaticamente: {e}")
-        print("💡 Teste manualmente executando: dist/AnalisadorArtigos.exe")
+        print(f"⚠️  Unable to test automatically: {e}")
+        print("💡 Test manually by running: dist/AnalisadorArtigos.exe")
         return True
 
 
 def create_installer_script():
-    """Cria script do Inno Setup para instalador profissional"""
-    print("\n📦 Criando script do instalador...")
+    """Create Inno Setup script for professional installer"""
+    print("\n📦 Creating the installer script...")
     
     inno_script = '''[Setup]
 AppName=Analisador de Artigos e Livros
@@ -267,76 +266,76 @@ Filename: "{app}\\AnalisadorArtigos.exe"; Description: "Executar Analisador de A
     try:
         with open('installer.iss', 'w', encoding='utf-8') as f:
             f.write(inno_script)
-        print("✅ Script do instalador criado: installer.iss")
-        print("💡 Use o Inno Setup para criar o instalador profissional")
+        print("✅ Installer script created: installer.iss")
+        print("💡 Use Inno Setup to create the professional installer")
         return True
     except Exception as e:
-        print(f"⚠️  Erro ao criar script do instalador: {e}")
+        print(f"⚠️  Error creating installer script: {e}")
         return False
 
 
 def main():
-    """Função principal do build"""
+    """Main function of the build"""
     print_header()
     
-    # 1. Verificar arquivos necessários
+    # 1. Check required files
     if not check_requirements():
-        input("\n❌ Build cancelado. Pressione Enter para sair...")
+        input("\n❌ Build canceled. Press Enter to exit...")
         return
     
-    # 2. Instalar dependências
+    # 2. Install dependencies
     if not install_dependencies():
-        input("\n❌ Erro nas dependências. Pressione Enter para sair...")
+        input("\n❌ Dependency error. Press Enter to exit...")
         return
     
-    # 3. Limpar builds anteriores
+    # 3. Clean up previous builds
     clean_build_dirs()
     
-    # 4. Criar arquivos auxiliares
+    # 4. Create auxiliary files
     create_build_files()
     
-    # 5. Compilar executável
+    # 5. Compile executable
     if not build_executable():
-        input("\n❌ Falha na compilação. Pressione Enter para sair...")
+        input("\n❌ Compilation failed. Press Enter to exit...")
         return
     
-    # 6. Testar executável
+    # 6. Test executable
     test_executable()
     
-    # 7. Criar script do instalador
+    # 7. Create installer script
     create_installer_script()
     
-    # 8. Resumo final
+    # 8. Final summary
     print("\n" + "=" * 60)
-    print("🎉 BUILD CONCLUÍDO COM SUCESSO!")
+    print("🎉 BUILD COMPLETED SUCCESSFULLY!")
     print("=" * 60)
-    print("📁 Arquivos criados:")
-    print("   • dist/AnalisadorArtigos.exe (executável principal)")
-    print("   • README.md (documentação)")
-    print("   • LICENSE.txt (licença)")
-    print("   • installer.iss (script do instalador)")
+    print("📁 Files created:")
+    print("   • dist/AnalisadorArtigos.exe (main executable)")
+    print("   • README.md (documentation)")
+    print("   • LICENSE.txt (license)")
+    print("   • installer.iss (installer script)")
     
-    print("\n📋 Próximos passos:")
-    print("1. Teste o executável: dist/AnalisadorArtigos.exe")
-    print("2. Para criar instalador profissional:")
-    print("   - Baixe Inno Setup: https://jrsoftware.org/isinfo.php")
-    print("   - Abra o arquivo installer.iss")
-    print("   - Compile o instalador")
+    print("\n📋 Next steps:")
+    print("1. Test the executable: dist/AnalisadorArtigos.exe")
+    print("2. To create professional installer:")
+    print("   - Download Inno Setup: https://jrsoftware.org/isinfo.php")
+    print("   - Open the file installer.iss")
+    print("   - Compile the installer")
     
-    # Pergunta se quer testar
-    test_now = input("\n🧪 Deseja testar o executável agora? (s/N): ").lower().strip()
+    # Ask if you want to test
+    test_now = input("\n🧪 Do you want to test the executable now? (s/N): ").lower().strip()
     if test_now in ['s', 'sim', 'y', 'yes']:
         try:
             exe_path = Path('dist/AnalisadorArtigos.exe')
             if exe_path.exists():
-                print("🚀 Abrindo executável...")
+                print("🚀 Opening executable...")
                 os.startfile(str(exe_path))
             else:
-                print("❌ Executável não encontrado")
+                print("❌ Executable not found")
         except Exception as e:
-            print(f"❌ Erro ao abrir executável: {e}")
+            print(f"❌ Error opening executable: {e}")
     
-    input("\nPressione Enter para finalizar...")
+    input("\nPress Enter to finish...")
 
 
 if __name__ == "__main__":
